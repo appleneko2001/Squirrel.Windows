@@ -314,7 +314,7 @@ gotADir:
 		lpCommandLine = L"";
 	}
 
-	wchar_t cmd[MAX_PATH * 2];
+	wchar_t cmd[MAX_PATH];
 	swprintf_s(cmd, L"\"%s\" --install . %s", updateExePath, lpCommandLine);
 
 	if (!CreateProcess(NULL, cmd, NULL, NULL, false, 0, NULL, targetDir, &si, &pi)) {
