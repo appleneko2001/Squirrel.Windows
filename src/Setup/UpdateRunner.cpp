@@ -2,7 +2,58 @@
 #include "unzip.h"
 #include "Resource.h"
 #include "UpdateRunner.h"
-#include <vector>
+#include <vector> 
+
+bool CUpdateRunner::ConfirmInstallToThisPath(wchar_t* path) {
+	CTaskDialog dlg;
+	TASKDIALOG_BUTTON buttons[] = {
+		{ 1, L"Change Path", },
+		{ 2, L"Install", },
+		{ 3, L"Cancel", },
+	};
+
+	dlg.SetButtons(buttons, 3, 2);
+	dlg.SetWindowTitle(L"Squirrel");
+	dlg.SetMainInstructionText(L"Confirm installation");
+	dlg.SetMainIcon(TD_INFORMATION_ICON);
+
+	while (true)
+	{
+		wchar_t message[1000];
+
+		_swprintf_c(message, _countof(message), L"The package will installed to directory: %s", path);
+		dlg.SetContentText(message);
+
+		int nButton;
+		if (FAILED(dlg.DoModal(::GetActiveWindow(), &nButton))) {
+			return 0;
+		}
+
+		if (nButton == 1) {
+			::BROWSEINFO bi = { 0 };
+			bi.hwndOwner = nullptr;
+			bi.ulFlags = BIF_NEWDIALOGSTYLE | BIF_EDITBOX | BIF_BROWSEFORCOMPUTER;
+			bi.lpszTitle = TEXT("Select install directory");
+			auto browse = SHBrowseForFolder(&bi);
+			wchar_t selected[MAX_PATH];
+			if (SHGetPathFromIDList(browse, selected)) {
+				if (DirectoryExists(selected) && DirectoryIsWritable(selected)) {
+					wcsncpy(path, selected, (size_t)_countof(selected));
+				}
+			}
+			if (browse != NULL) {
+				// free memory used 
+				CoTaskMemFree(browse);
+			}
+		}
+		else if (nButton == 2)
+			return 1;
+		else if (nButton == 3)
+			return 0;
+
+	}
+	return 0;
+}
 
 void CUpdateRunner::DisplayErrorMessage(CString& errorMessage, wchar_t* logFile)
 {
@@ -15,7 +66,8 @@ void CUpdateRunner::DisplayErrorMessage(CString& errorMessage, wchar_t* logFile)
 	// TODO: Something about contacting support?
 	if (logFile == NULL) {
 		dlg.SetButtons(&buttons[1], 1, 1);
-	} else {
+	}
+	else {
 		dlg.SetButtons(buttons, 2, 1);
 	}
 
@@ -62,7 +114,7 @@ out:
 	return hr;
 }
 
-HRESULT FindDesktopFolderView(REFIID riid, void **ppv)
+HRESULT FindDesktopFolderView(REFIID riid, void** ppv)
 {
 	HRESULT hr;
 
@@ -93,7 +145,7 @@ HRESULT FindDesktopFolderView(REFIID riid, void **ppv)
 	return S_OK;
 }
 
-HRESULT GetDesktopAutomationObject(REFIID riid, void **ppv)
+HRESULT GetDesktopAutomationObject(REFIID riid, void** ppv)
 {
 	HRESULT hr;
 
@@ -136,15 +188,15 @@ bool CUpdateRunner::DirectoryExists(wchar_t* szPath)
 		(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
-bool CUpdateRunner::DirectoryIsWritable(wchar_t * szPath)
+bool CUpdateRunner::DirectoryIsWritable(wchar_t* szPath)
 {
-		wchar_t szTempFileName[MAX_PATH];
-		UINT uRetVal = GetTempFileNameW(szPath, L"Squirrel", 0, szTempFileName);
-		if (uRetVal == 0) {
-			return false;
-		}
-		DeleteFile(szTempFileName);
-		return true;
+	wchar_t szTempFileName[MAX_PATH];
+	UINT uRetVal = GetTempFileNameW(szPath, L"Squirrel", 0, szTempFileName);
+	if (uRetVal == 0) {
+		return false;
+	}
+	DeleteFile(szTempFileName);
+	return true;
 }
 
 int CUpdateRunner::ExtractUpdaterAndRun(wchar_t* lpCommandLine, bool useFallbackDir)
@@ -190,6 +242,9 @@ int CUpdateRunner::ExtractUpdaterAndRun(wchar_t* lpCommandLine, bool useFallback
 
 gotADir:
 
+	if (!ConfirmInstallToThisPath(targetDir)) {
+		return 0;
+	}
 	wcscat_s(targetDir, _countof(targetDir), L"\\SquirrelTemp");
 
 	if (!CreateDirectory(targetDir, NULL) && GetLastError() != ERROR_ALREADY_EXISTS) {
@@ -259,7 +314,7 @@ gotADir:
 		lpCommandLine = L"";
 	}
 
-	wchar_t cmd[MAX_PATH];
+	wchar_t cmd[MAX_PATH * 2];
 	swprintf_s(cmd, L"\"%s\" --install . %s", updateExePath, lpCommandLine);
 
 	if (!CreateProcess(NULL, cmd, NULL, NULL, false, 0, NULL, targetDir, &si, &pi)) {
@@ -285,7 +340,7 @@ gotADir:
 
 	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
-	return (int) dwExitCode;
+	return (int)dwExitCode;
 
 failedExtract:
 	if (!useFallbackDir) {
@@ -294,5 +349,5 @@ failedExtract:
 	}
 
 	DisplayErrorMessage(CString(L"Failed to extract installer"), NULL);
-	return (int) dwExitCode;
+	return (int)dwExitCode;
 }

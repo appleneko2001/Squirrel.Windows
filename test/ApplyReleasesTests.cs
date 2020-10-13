@@ -1,3 +1,6 @@
+using NuGet;
+using Squirrel.SimpleSplat;
+using Squirrel.Tests.TestHelpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,10 +10,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NuGet;
-using Squirrel.SimpleSplat;
-using Squirrel;
-using Squirrel.Tests.TestHelpers;
 using Xunit;
 
 namespace Squirrel.Tests
@@ -36,12 +35,14 @@ namespace Squirrel.Tests
             string remotePkgDir;
 
             using (Utility.WithTempDirectory(out tempDir))
-            using (Utility.WithTempDirectory(out remotePkgDir)) {
+            using (Utility.WithTempDirectory(out remotePkgDir))
+            {
                 IntegrationTestHelper.CreateFakeInstalledApp("0.1.0", remotePkgDir);
                 var pkgs = ReleaseEntry.BuildReleasesFile(remotePkgDir);
                 ReleaseEntry.WriteReleaseFile(pkgs, Path.Combine(remotePkgDir, "RELEASES"));
 
-                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir)) {
+                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir))
+                {
                     await fixture.FullInstall();
 
                     // NB: We execute the Squirrel-aware apps, so we need to give
@@ -65,12 +66,14 @@ namespace Squirrel.Tests
             string remotePkgDir;
 
             using (Utility.WithTempDirectory(out tempDir))
-            using (Utility.WithTempDirectory(out remotePkgDir)) {
+            using (Utility.WithTempDirectory(out remotePkgDir))
+            {
                 IntegrationTestHelper.CreateFakeInstalledApp("0.1.0", remotePkgDir);
                 var pkgs = ReleaseEntry.BuildReleasesFile(remotePkgDir);
                 ReleaseEntry.WriteReleaseFile(pkgs, Path.Combine(remotePkgDir, "RELEASES"));
 
-                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir)) {
+                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir))
+                {
                     await fixture.FullInstall();
                 }
 
@@ -80,7 +83,8 @@ namespace Squirrel.Tests
                 pkgs = ReleaseEntry.BuildReleasesFile(remotePkgDir);
                 ReleaseEntry.WriteReleaseFile(pkgs, Path.Combine(remotePkgDir, "RELEASES"));
 
-                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir)) {
+                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir))
+                {
                     await fixture.UpdateApp();
                 }
 
@@ -101,12 +105,14 @@ namespace Squirrel.Tests
             string remotePkgDir;
 
             using (Utility.WithTempDirectory(out tempDir))
-            using (Utility.WithTempDirectory(out remotePkgDir)) {
+            using (Utility.WithTempDirectory(out remotePkgDir))
+            {
                 IntegrationTestHelper.CreateFakeInstalledApp("0.1.0", remotePkgDir);
                 var pkgs = ReleaseEntry.BuildReleasesFile(remotePkgDir);
                 ReleaseEntry.WriteReleaseFile(pkgs, Path.Combine(remotePkgDir, "RELEASES"));
 
-                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir)) {
+                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir))
+                {
                     await fixture.FullInstall();
                 }
 
@@ -116,14 +122,16 @@ namespace Squirrel.Tests
                 pkgs = ReleaseEntry.BuildReleasesFile(remotePkgDir);
                 ReleaseEntry.WriteReleaseFile(pkgs, Path.Combine(remotePkgDir, "RELEASES"));
 
-                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir)) {
+                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir))
+                {
                     await fixture.UpdateApp();
                 }
 
                 await Task.Delay(1000);
 
                 // NB: The 2nd time we won't have any updates to apply. We should just do nothing!
-                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir)) {
+                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir))
+                {
                     await fixture.UpdateApp();
                 }
 
@@ -138,12 +146,14 @@ namespace Squirrel.Tests
             string remotePkgDir;
 
             using (Utility.WithTempDirectory(out tempDir))
-            using (Utility.WithTempDirectory(out remotePkgDir)) {
+            using (Utility.WithTempDirectory(out remotePkgDir))
+            {
                 IntegrationTestHelper.CreateFakeInstalledApp("0.1.0", remotePkgDir);
                 var pkgs = ReleaseEntry.BuildReleasesFile(remotePkgDir);
                 ReleaseEntry.WriteReleaseFile(pkgs, Path.Combine(remotePkgDir, "RELEASES"));
 
-                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir)) {
+                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir))
+                {
                     await fixture.FullInstall();
                 }
 
@@ -153,13 +163,15 @@ namespace Squirrel.Tests
                 pkgs = ReleaseEntry.BuildReleasesFile(remotePkgDir);
                 ReleaseEntry.WriteReleaseFile(pkgs, Path.Combine(remotePkgDir, "RELEASES"));
 
-                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir)) {
+                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir))
+                {
                     await fixture.UpdateApp();
                 }
 
                 await Task.Delay(1000);
 
-                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir)) {
+                using (var fixture = new UpdateManager(remotePkgDir, "theApp", tempDir))
+                {
                     await fixture.FullUninstall();
                 }
 
@@ -173,7 +185,8 @@ namespace Squirrel.Tests
         public void WhenNoNewReleasesAreAvailableTheListIsEmpty()
         {
             string tempDir;
-            using (Utility.WithTempDirectory(out tempDir)) {
+            using (Utility.WithTempDirectory(out tempDir))
+            {
                 var appDir = Directory.CreateDirectory(Path.Combine(tempDir, "theApp"));
                 var packages = Path.Combine(appDir.FullName, "packages");
                 Directory.CreateDirectory(packages);
@@ -222,7 +235,8 @@ namespace Squirrel.Tests
         {
             string tempDir;
 
-            using (Utility.WithTempDirectory(out tempDir)) {
+            using (Utility.WithTempDirectory(out tempDir))
+            {
                 string appDir = Path.Combine(tempDir, "theApp");
                 string packagesDir = Path.Combine(appDir, "packages");
                 Directory.CreateDirectory(packagesDir);
@@ -254,7 +268,8 @@ namespace Squirrel.Tests
                     new {Name = "NSync.Core.dll", Version = new Version("1.1.0.0")},
                 };
 
-                filesToFind.ForEach(x => {
+                filesToFind.ForEach(x =>
+                {
                     var path = Path.Combine(tempDir, "theApp", "app-1.1.0.0", x.Name);
                     this.Log().Info("Looking for {0}", path);
                     File.Exists(path).ShouldBeTrue();
@@ -271,7 +286,8 @@ namespace Squirrel.Tests
         {
             string tempDir;
 
-            using (Utility.WithTempDirectory(out tempDir)) {
+            using (Utility.WithTempDirectory(out tempDir))
+            {
                 string appDir = Path.Combine(tempDir, "theApp");
                 string packagesDir = Path.Combine(appDir, "packages");
                 Directory.CreateDirectory(packagesDir);
@@ -302,7 +318,8 @@ namespace Squirrel.Tests
                 new[] {
                     new {Name = "NLog.dll", Version = new Version("2.0.0.0")},
                     new {Name = "NSync.Core.dll", Version = new Version("1.1.0.0")},
-                }.ForEach(x => {
+                }.ForEach(x =>
+                {
                     var path = Path.Combine(rootDirectory, x.Name);
                     this.Log().Info("Looking for {0}", path);
                     File.Exists(path).ShouldBeTrue();
@@ -351,7 +368,8 @@ namespace Squirrel.Tests
                 new[] {
                     new {Name = "NLog.dll", Version = new Version("2.0.0.0")},
                     new {Name = "NSync.Core.dll", Version = new Version("1.1.0.0")},
-                }.ForEach(x => {
+                }.ForEach(x =>
+                {
                     var path = Path.Combine(rootDirectory, x.Name);
                     this.Log().Info("Looking for {0}", path);
                     File.Exists(path).ShouldBeTrue();
@@ -370,7 +388,8 @@ namespace Squirrel.Tests
         {
             string tempDir;
 
-            using (Utility.WithTempDirectory(out tempDir)) {
+            using (Utility.WithTempDirectory(out tempDir))
+            {
                 string appDir = Path.Combine(tempDir, "theApp");
                 string packagesDir = Path.Combine(appDir, "packages");
                 Directory.CreateDirectory(packagesDir);
@@ -404,7 +423,8 @@ namespace Squirrel.Tests
                     new {Name = "NSync.Core.dll", Version = new Version("1.1.0.0")},
                 };
 
-                filesToFind.ForEach(x => {
+                filesToFind.ForEach(x =>
+                {
                     var path = Path.Combine(tempDir, "theApp", "app-1.1.0.0", x.Name);
                     this.Log().Info("Looking for {0}", path);
                     File.Exists(path).ShouldBeTrue();
@@ -420,7 +440,8 @@ namespace Squirrel.Tests
         public async Task CreateFullPackagesFromDeltaSmokeTest()
         {
             string tempDir;
-            using (Utility.WithTempDirectory(out tempDir)) {
+            using (Utility.WithTempDirectory(out tempDir))
+            {
                 string appDir = Path.Combine(tempDir, "theApp");
                 string packagesDir = Path.Combine(appDir, "packages");
                 Directory.CreateDirectory(packagesDir);
@@ -437,7 +458,7 @@ namespace Squirrel.Tests
                 var deltaEntry = ReleaseEntry.GenerateFromFile(Path.Combine(tempDir, "theApp", "packages", "Squirrel.Core.1.1.0.0-delta.nupkg"));
 
                 var resultObs = (Task<ReleaseEntry>)fixture.GetType().GetMethod("createFullPackagesFromDeltas", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .Invoke(fixture, new object[] { new[] {deltaEntry}, baseEntry });
+                    .Invoke(fixture, new object[] { new[] { deltaEntry }, baseEntry });
 
                 var result = await resultObs;
                 var zp = new ZipPackage(Path.Combine(tempDir, "theApp", "packages", result.Filename));
@@ -451,9 +472,11 @@ namespace Squirrel.Tests
             string remotePkgPath;
             string path;
 
-            using (Utility.WithTempDirectory(out path)) {
+            using (Utility.WithTempDirectory(out path))
+            {
                 using (Utility.WithTempDirectory(out remotePkgPath))
-                using (var mgr = new UpdateManager(remotePkgPath, "theApp", path)) {
+                using (var mgr = new UpdateManager(remotePkgPath, "theApp", path))
+                {
                     IntegrationTestHelper.CreateFakeInstalledApp("1.0.0.1", remotePkgPath);
                     await mgr.FullInstall();
                 }
@@ -470,7 +493,7 @@ namespace Squirrel.Tests
                 Thread.Sleep(1000);
             }
         }
-        
+
         [Fact]
         public void UnshimOurselvesSmokeTest()
         {
@@ -488,9 +511,11 @@ namespace Squirrel.Tests
             string remotePkgPath;
             string path;
 
-            using (Utility.WithTempDirectory(out path)) {
+            using (Utility.WithTempDirectory(out path))
+            {
                 using (Utility.WithTempDirectory(out remotePkgPath))
-                using (var mgr = new UpdateManager(remotePkgPath, "theApp", path)) {
+                using (var mgr = new UpdateManager(remotePkgPath, "theApp", path))
+                {
                     IntegrationTestHelper.CreateFakeInstalledApp("1.0.0.1", remotePkgPath);
                     await mgr.FullInstall();
                 }
