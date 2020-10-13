@@ -1,17 +1,16 @@
 | README.md |
 |:---|
 
-# Contributors Needed
+# THIS IS A UNOFFICIAL FORK
 
-We are looking for help with maintaining this important project - please read the discussion in [#1470](https://github.com/Squirrel/Squirrel.Windows/issues/1470) for more information.
+I'm so disappointed by answer from Contributor of official project. I know they want to install application as quick as possible and no any popups, but sometimes not every people want this. 
+The feature of confirm install is still incomplete but now it usable. It will asked for confirm installation like this:
 
----
+![](screenshots/1.png)
 
 # Squirrel: It's like ClickOnce but Works™
 
 ![](docs/artwork/Squirrel-Logo.png)
-
-[![Build Status](https://dev.azure.com/squirrel-installers/Squirrel.Windows/_apis/build/status/Squirrel.Squirrel.Windows?branchName=master)](https://dev.azure.com/squirrel-installers/Squirrel.Windows/_build/latest?definitionId=1&branchName=master)
 
 Squirrel is both a set of tools and a library, to completely manage both installation and updating your Desktop Windows application, written in either C# or any other language (i.e., Squirrel can manage native C++ applications).
 
@@ -24,7 +23,7 @@ Windows apps should be as fast and as easy to install and update as apps like Go
 * **Integrating** an app to use Squirrel should be extremely easy, provide a client API, and be developer friendly.
 * **Packaging** is really easy, can be automated, and supports delta update packages.
 * **Distributing** should be straightforward, use simple HTTP updates, and provide multiple "channels" (a-la Chrome Dev/Beta/Release).
-* **Installing** is Wizard-Free™, with no UAC dialogs, does not require reboot, and is .NET Framework friendly.
+* **Installing** is Wizard-Free™, with no UAC dialogs, does not require reboot, and is .NET Framework friendly. (And the install directory will be asked to avoid install to C:)
 * **Updating** is in the background, doesn't interrupt the user, and does not require a reboot.
 
 Refer to our full list of goals for [integrating, packaging, distributing, installing, and updating](docs/goals.md).
